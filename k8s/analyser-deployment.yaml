@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: analyser-service
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: analyser-service
+
+  template:
+    metadata:
+      labels:
+        app: analyser-service
+
+    spec:
+      containers:
+        - name: analyser-service
+          image: wanna11be11developer/traceops-analyser-service:latest
+
+          ports:
+            - containerPort: 6000
+
+          env:
+            - name: LOGGER_SERVICE_URL
+              value: http://logger-service:5000

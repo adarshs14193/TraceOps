@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: order-service
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: order-service
+
+  template:
+    metadata:
+      labels:
+        app: order-service
+
+    spec:
+      containers:
+        - name: order-service
+          image: wanna11be11developer/traceops-order-service:latest
+
+          ports:
+            - containerPort: 3000
+
+          env:
+            - name: PAYMENT_SERVICE_URL
+              value: http://payment-service:4000
+
+            - name: LOGGER_SERVICE_URL
+              value: http://logger-service:5000
