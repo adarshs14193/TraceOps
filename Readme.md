@@ -1,5 +1,5 @@
 
-# TraceOps
+# TraceOps - Distributed Tracing & Failure Analysis Platform
 
 > A lightweight distributed tracing and failure analysis platform built from scratch using Node.js microservices.
 
