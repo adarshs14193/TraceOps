@@ -1,251 +1,455 @@
+# 🚀 TraceOps - Cloud Native Distributed Tracing Platform
 
-# TraceOps - Distributed Tracing & Failure Analysis Platform
+> A production-inspired cloud-native microservices platform demonstrating distributed tracing, centralized logging, Kubernetes orchestration, API Gateway, Docker-based deployments, and CI automation using GitHub Actions.
 
-> A lightweight distributed tracing and failure analysis platform built from scratch using Node.js microservices.
-
-TraceOps helps developers understand how a request flows through a distributed system by propagating trace IDs, collecting centralized logs, and analyzing request timelines.
-
----
-
-## Why TraceOps?
-
-Debugging distributed systems becomes difficult as the number of microservices grows.
-
-Consider a request flowing through multiple services:
-
-```
-Client
-   │
-   ▼
-Order Service
-   │
-   ▼
-Payment Service
-   │
-   ▼
-Inventory Service
-```
-
-If something fails, each service has its own logs.
-
-Developers often need to manually inspect multiple terminals or log files to identify where the request failed.
-
-TraceOps solves this by:
-
-- Propagating a unique Trace ID across services
-- Collecting logs into a centralized logging service
-- Reconstructing the complete request timeline
-- Identifying failures and execution details
+![Node.js](https://img.shields.io/badge/Node.js-22-green)
+![Docker](https://img.shields.io/badge/Docker-Containerized-blue)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-Orchestrated-326CE5)
+![NGINX](https://img.shields.io/badge/NGINX-API_Gateway-green)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI-blue)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
 ---
 
-# Features
+# Overview
 
-- Distributed Trace ID propagation
+TraceOps is a DevOps-focused microservices project built to simulate how modern cloud-native applications are deployed and operated.
+
+Instead of focusing only on backend APIs, the project demonstrates the complete DevOps lifecycle:
+
+- Containerization using Docker
+- Multi-container orchestration using Docker Compose
+- Kubernetes deployments
+- Internal service discovery
+- API Gateway using NGINX
+- Distributed request tracing
 - Centralized logging
-- Request timeline reconstruction
-- Failure detection
-- Total request duration calculation
-- Microservice architecture
-- Express middleware for request context propagation
+- Failure analysis
+- CI pipeline using GitHub Actions
+- Docker Hub image publishing
 
 ---
+![git ci](<gitci.png>)
+![route checks](image.png)
+![route checks](image-1.png)
+![kubernetes logs](<kubernetes logs.png>)
+![docker-hub](image-2.png)
 
 # Architecture
-
-```
-                    Client
-                       │
-                       ▼
-                Order Service
-                       │
-             trace-id propagated
-                       │
-                       ▼
-               Payment Service
-                 │           │
-                 │           │
-                 ▼           ▼
-          Logger Service  (stores logs)
-                 ▲
-                 │
-                 │
-          Analyzer Service
+![Architecture](traceops-architecture-1.png)
 ```
 
----
-
-# Services
-
-## Order Service
-
-Responsible for:
-
-- Creating orders
-- Calling the Payment Service
-- Propagating Trace IDs
-- Sending structured logs to Logger Service
-
----
-
-## Payment Service
-
-Responsible for:
-
-- Processing payments
-- Receiving propagated Trace IDs
-- Sending logs to Logger Service
-
----
-
-## Logger Service
-
-Responsible for:
-
-- Receiving logs from all services
-- Storing structured log events
-- Returning logs via REST API
-
-Logger performs **no analysis**.
-
----
-
-## Analyzer Service
-
-Responsible for:
-
-- Fetching logs from Logger Service
-- Grouping logs by Trace ID
-- Sorting events chronologically
-- Detecting failures
-- Building request timelines
-
----
-
-# Request Flow
-
-```
 Client
+│
+▼
+NGINX API Gateway
+│
+├───────────────┐
+▼ ▼
+Order Service Analyzer Service
+│ │
+▼ ▼
+Payment Service Logger Service
 
-↓
-
-POST /order
-
-↓
-
-Order Service
-
-↓
-
-POST /pay
-
-↓
-
-Payment Service
-
-↓
-
-POST /log
-
-↓
-
-Logger Service
-
-↓
-
-GET /analyse/:traceId
-
-↓
-
-Analyzer Service
 ```
 
 ---
 
-# Log Structure
+# DevOps Workflow
 
-Every service emits structured logs.
+```
 
-```json
-{
-  "traceId": "abc123",
-  "orderId": "ORD-1",
-  "service": "payment-service",
-  "level": "INFO",
-  "message": "Payment Successful",
-  "timestamp": "2026-07-03T14:30:21Z"
-}
+Developer
+│
+▼
+Git Push
+│
+▼
+GitHub Actions
+│
+├── Build Docker Images
+├── Push Images to Docker Hub
+▼
+Kubernetes Cluster
+│
+├── Deployments
+├── Services
+├── Internal DNS
+▼
+NGINX Gateway
+│
+▼
+Microservices
+
 ```
 
 ---
 
-# Analyzer Response
+# Tech Stack
 
-Example:
-
-```json
-{
-  "traceId": "abc123",
-  "status": "SUCCESS",
-  "totalEvents": 2,
-  "servicesVisited": [
-    "order-service",
-    "payment-service"
-  ],
-  "totalDuration": "42 ms",
-  "failedService": null,
-  "timeline": [
-    ...
-  ]
-}
-```
-
----
-
-# Technologies Used
+## Backend
 
 - Node.js
 - Express.js
-- Axios
-- UUID (crypto.randomUUID)
-- REST APIs
+
+## Containerization
+
+- Docker
+- Docker Compose
+
+## Container Registry
+
+- Docker Hub
+
+## Orchestration
+
+- Kubernetes
+- Deployments
+- Services
+- Internal DNS
+
+## Networking
+
+- NGINX Reverse Proxy
+- API Gateway
+
+## CI/CD
+
+- GitHub Actions
 
 ---
 
-# What I Learned
+# DevOps Features
 
-Building TraceOps helped me understand:
+## Dockerized Microservices
 
-- Microservice architecture
-- Service-to-service communication
-- HTTP request propagation
-- Express middleware
-- Distributed tracing fundamentals
-- Centralized logging
-- Separation of concerns
-- Failure analysis
+Each service runs in its own isolated Docker container.
+
+- Order Service
+- Payment Service
+- Logger Service
+- Analyzer Service
+- NGINX Gateway
 
 ---
 
+## Docker Compose
 
+Local multi-container development environment.
 
-# Repository Structure
+Features:
+
+- Automatic service networking
+- Environment variable management
+- Container dependency management
+- One-command startup
+
+```bash
+docker compose up
+```
+
+---
+
+## Kubernetes
+
+Every microservice is deployed independently using Kubernetes Deployments.
+
+Features:
+
+- Replica management
+- Self-healing pods
+- Rolling updates
+- Service discovery
+- Load balancing
+
+---
+
+## Kubernetes Services
+
+Each microservice communicates using Kubernetes DNS.
+
+Example:
 
 ```
+
+http://payment-service:4000
+
+```
+
+instead of
+
+```
+
+localhost:4000
+
+```
+
+---
+
+## API Gateway
+
+NGINX acts as the single entry point.
+
+Client only communicates with
+
+```
+
+localhost:8080
+
+```
+
+NGINX internally routes requests to the appropriate service.
+
+---
+
+## Distributed Tracing
+
+Every request receives a unique Trace ID.
+
+Example
+
+```
+
+3cde8149-a54e-43c6-a5d8-f8569e63c992
+
+```
+
+The Trace ID propagates automatically across all services.
+
+---
+
+## Centralized Logging
+
+Every service pushes structured logs to Logger Service.
+
+Each log stores
+
+- Trace ID
+- Order ID
+- Timestamp
+- Service Name
+- Log Level
+- Message
+
+---
+
+## Failure Analysis
+
+Analyzer Service reconstructs the complete lifecycle of any request.
+
+It provides
+
+- Timeline reconstruction
+- Service traversal
+- Total execution duration
+- Failure detection
+- Root cause identification
+
+---
+
+## GitHub Actions
+
+Every push to the main branch automatically
+
+- Builds Docker images
+- Pushes images to Docker Hub
+
+CI Pipeline
+
+```
+
+Git Push
+
+↓
+
+GitHub Actions
+
+↓
+
+Docker Build
+
+↓
+
+Docker Hub
+
+```
+
+---
+
+# Docker Images
+
+| Image | Purpose |
+|---------|----------|
+| traceops-order-service | Order Processing |
+| traceops-payment-service | Payment Processing |
+| traceops-logger-service | Central Logging |
+| traceops-analyser-service | Trace Analysis |
+| traceops-nginx | API Gateway |
+
+---
+
+# Project Structure
+
+```
+
 traceops/
 
+├── .github/
+│ └── workflows/
+│ └── ci.yml
+│
 ├── order-service/
 ├── payment-service/
 ├── logger-service/
-├── analyzer-service/
-├── README.md
-└── docs/
+├── analyser-service/
+├── nginx/
+│
+├── docker-compose.yml
+│
+└── k8s/
+├── order-deployment.yaml
+├── payment-deployment.yaml
+├── logger-deployment.yaml
+├── analyser-deployment.yaml
+├── nginx-deployment.yaml
+└── services/
+
 ```
 
 ---
 
-# Inspiration
+# Running Locally
 
-Modern distributed systems rely on tools like OpenTelemetry, Jaeger and Datadog to trace requests across services.
+## Docker Compose
 
-TraceOps is a lightweight educational implementation built from scratch to understand the underlying concepts before using production-grade tooling.
+```bash
+docker compose up --build
+```
+
+---
+
+## Kubernetes
+
+Deploy everything
+
+```bash
+kubectl apply -f k8s/
+```
+
+Check pods
+
+```bash
+kubectl get pods
+```
+
+Check services
+
+```bash
+kubectl get svc
+```
+
+Port forward NGINX
+
+```bash
+kubectl port-forward service/nginx 8080:80
+```
+
+---
+
+# API Endpoints
+
+## Create Order
+
+```http
+POST /order
+```
+
+Body
+
+```json
+{
+    "item":"apple",
+    "quantity":5
+}
+```
+
+---
+
+## Analyze Trace
+
+```http
+GET /analyse/{traceId}
+```
+
+Returns
+
+- Timeline
+- Services Visited
+- Execution Time
+- Failure Status
+
+---
+
+# CI Pipeline
+
+The project uses GitHub Actions to automatically
+
+✅ Checkout Repository
+
+✅ Login to Docker Hub
+
+✅ Build Order Service
+
+✅ Build Payment Service
+
+✅ Build Logger Service
+
+✅ Build Analyzer Service
+
+✅ Build NGINX
+
+✅ Push Images to Docker Hub
+
+---
+
+# Future Improvements
+
+- CD using GitHub Actions
+- Helm Charts
+- Prometheus Monitoring
+- Grafana Dashboards
+- OpenTelemetry
+- Jaeger Integration
+- Horizontal Pod Autoscaler
+- Ingress Controller
+- ArgoCD / GitOps Deployment
+- AWS EKS Deployment
+
+---
+
+# Learning Outcomes
+
+This project demonstrates practical experience with
+
+- Microservices Architecture
+- Docker
+- Docker Compose
+- Kubernetes
+- NGINX
+- Service Discovery
+- API Gateway
+- Distributed Tracing
+- Structured Logging
+- CI Pipelines
+- Docker Hub
+- Rolling Deployments
+- Cloud Native Architecture
+
+---
+
+# Author
+
+**Adarsh S**
+
+Mechanical Engineering • NITK Surathkal
+
