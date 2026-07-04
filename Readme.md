@@ -29,27 +29,20 @@ Instead of focusing only on backend APIs, the project demonstrates the complete 
 - Docker Hub image publishing
 
 ---
+# Git CI
 ![git ci](<gitci.png>)
+# Route Check
 ![route checks](image.png)
 ![route checks](image-1.png)
+# Kubernetes Logs
 ![kubernetes logs](<kubernetes logs.png>)
+# Docker hub
 ![docker-hub](image-2.png)
 
 # Architecture
 ![Architecture](traceops-architecture-1.png)
 ```
 
-Client
-│
-▼
-NGINX API Gateway
-│
-├───────────────┐
-▼ ▼
-Order Service Analyzer Service
-│ │
-▼ ▼
-Payment Service Logger Service
 
 ```
 
