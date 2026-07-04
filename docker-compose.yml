@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+  
+  order-service:
+    build: ./order-service
+    container_name: order-service
+    ports:
+      - "3000:3000"
+    
+    environment:
+      PAYMENT_SERVICE_URL: http://payment-service:4000 
+      LOGGER_SERVICE_URL: http://logger-service:5000
+
+    depends_on:
+      - payment-service
+      - logger-service
+
+  payment-service:
+    build: ./payment-service
+    container_name: payment-service
+
+    ports:
+      - "4000:4000"
+
+    environment:
+      LOGGER_SERVICE_URL: http://logger-service:5000
+
+    depends_on:
+      - logger-service
+
+  logger-service:
+    build: ./logger-service
+    container_name: logger-service
+
+    ports:
+      - "5000:5000"
+
+  analyser-service:
+    build: ./analyser-service
+    container_name: analyser-service
+
+    ports:
+      - "6000:6000"
+
+    environment:
+      LOGGER_SERVICE_URL: http://logger-service:5000
+
+    depends_on:
+      - logger-service
+      
